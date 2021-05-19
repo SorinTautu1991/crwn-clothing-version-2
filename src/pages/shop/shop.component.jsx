@@ -25,13 +25,32 @@ class ShopPage extends React.Component {
   componentDidMount() {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection('collections');
-    this.unsubscribeFromSnapshot = collectionRef.onSnapshot(
-      async (snapshot) => {
-        const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-        updateCollections(collectionsMap);
-        this.setState({ isLoading: false });
-      }
-    );
+
+    // Promise style fetch to firebase
+    collectionRef.get().then((snapshot) => {
+      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+      updateCollections(collectionsMap);
+      this.setState({ isLoading: false });
+    });
+
+    // Using the fetch api to fetch data from firebase
+    // fetch(
+    //   'https://firestore.googleapis.com/v1/projects/crwn-clothing-version-2-db/databases/(default)/documents/collections'
+    // )
+    //   .then((res) => res.json())
+    //   .then((collections) => {
+    //     console.log();
+    //   });
+
+    // Fetching data from firebase using the Observable pattern
+
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(
+    //   async (snapshot) => {
+    //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+    //     updateCollections(collectionsMap);
+    //     this.setState({ isLoading: false });
+    //   }
+    // );
   }
 
   render() {
